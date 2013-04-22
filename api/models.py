@@ -78,3 +78,12 @@ class Event(models.Model):
 
     def __unicode__(self):
         return 'Usuario: %s  Fecha: %s' % (self.user.username, self.date)
+
+#Equipos registrados en la plataforma
+class Team(models.Model):
+    
+    name = models.CharField(max_length=50)
+    image = models.CharField(max_length=250)
+    description = models.TextField()
+    manage = models.ForeignKey(User)
+
