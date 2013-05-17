@@ -15,9 +15,6 @@ def get_all_user(request):
 # funcion encargada de realizar el login de usuario
 @csrf_exempt
 def get_info_user(request):
-    
-    print request.method
-
     if request.method == 'POST':
     	print request.POST
         users = User.objects.filter(username=request.POST['username'],password=request.POST['passwd']).values('name','email','position','level','ranking','profile')
