@@ -14,6 +14,11 @@ urlpatterns = patterns('',
 
     url(r'^add_event$','api.views.add_event', name='add_event'),
     url(r'^get_my_event$','api.views.get_my_event', name='get_my_event'),
+    url(r'^get_all_event$','api.views.get_all_event', name='get_all_event'),
+
+    url(r'^add_team$','api.views.add_team', name='add_team'),
+    url(r'^get_my_team$','api.views.get_my_team', name='get_my_team'),
+    url(r'^get_all_team$','api.views.get_all_team', name='get_all_team'),
     
     url(r'^get_all_field$','api.views.get_all_field', name='get_all_field'),
 

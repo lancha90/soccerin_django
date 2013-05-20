@@ -51,7 +51,10 @@ class User(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __unicode__(self):
-        return unicode(self.name)
+        return '%s  - %s' % (self.name,self.username)
+
+    def natural_key(self):
+        return '%s  - %s' % (self.name,self.username)
 
 #Canchas de futbol registradas en la aplicacion
 class Field(models.Model):
@@ -67,6 +70,9 @@ class Field(models.Model):
 
     def __unicode__(self):
         return unicode(self.name)
+
+    def natural_key(self):
+        return '%s  - %s' % (self.name,self.cost)
 
 #Partidos programados por los usuarios en la plataforma
 class Event(models.Model):
@@ -87,3 +93,7 @@ class Team(models.Model):
     description = models.TextField()
     manage = models.ForeignKey(User)
 
+    def __unicode__(self):
+        return '%s' % (self.name)
+    def natural_key(self):
+        return '%s' % (self.name)

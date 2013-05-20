@@ -53,10 +53,9 @@ def add_user(request):
 @csrf_exempt
 def add_event(request):
     if request.method == 'POST':
-
         event = Event()
         event.user = User.objects.get(email=request.POST['user'])
-        event.field = Field.objects.get(id=request.POST['field'])
+        event.field = Field.objects.get(name=request.POST['field'])
         event.date = request.POST['date']
         event.duration = request.POST['duration']
         event.save()
@@ -67,22 +66,70 @@ def add_event(request):
     else:
         raise Http404
 
-#funcion encargada de listar los ultimos 20 eventos
+#funcion encargada de listar los ultimos 20 eventos propios
 @csrf_exempt
 def get_my_event(request):
     if request.method == 'POST':
         user = User.objects.filter(email=request.POST['email'])
         events = Event.objects.filter(user=user).order_by('date')[:10]
-        data = serializers.serialize('json', events)
+        data = serializers.serialize('json', events,use_natural_keys=True)
         return HttpResponse(data, mimetype='application/json')
     else:
         raise Http404
 
+#funcion encargada de listar los ultimos 20 eventos
+@csrf_exempt
+def get_all_event(request):
+    if request.method == 'GET':
+        data = serializers.serialize('json', Event.objects.all().order_by('date')[:20],use_natural_keys=True)
+        return HttpResponse(data, mimetype='application/json')
+    else:
+        raise Http404
+
+#Funcion encargada de listar todos los campos que existen en la plataforma
 @csrf_exempt
 def get_all_field(request):
     if request.method == 'GET':
         fields = Field.objects.all().order_by('id')[:20]
-        data = serializers.serialize('json', fields)
+        data = serializers.serialize('json', fields,use_natural_keys=True)
+        return HttpResponse(data, mimetype='application/json')
+    else:
+        raise Http404
+
+
+#funcion encargada adicionar un evento
+@csrf_exempt
+def add_team(request):
+    if request.method == 'POST':
+        team = Team()
+        team.manage = User.objects.get(email=request.POST['user'])
+        team.name = request.POST['name']
+        team.description = request.POST['description']
+        team.save()
+
+        data = json.dumps({'user':team.user.email,'name':team.field.name})
+        return HttpResponse(data, mimetype='application/json')
+
+    else:
+        raise Http404
+
+#Funcion encargada de listar todos los equipos que existen en la plataforma
+@csrf_exempt
+def get_all_team(request):
+    if request.method == 'GET':
+        fields = Team.objects.all().order_by('name')[:20]
+        data = serializers.serialize('json', fields,use_natural_keys=True)
+        return HttpResponse(data, mimetype='application/json')
+    else:
+        raise Http404
+
+#funcion encargada de listar los ultimos 20 eventos propios
+@csrf_exempt
+def get_my_team(request):
+    if request.method == 'POST':
+        user = User.objects.filter(email=request.POST['email'])
+        events = Team.objects.filter(manage=user).order_by('name')[:10]
+        data = serializers.serialize('json', events,use_natural_keys=True)
         return HttpResponse(data, mimetype='application/json')
     else:
         raise Http404
