@@ -128,7 +128,7 @@ def get_all_team(request):
 def get_my_team(request):
     if request.method == 'POST':
         user = User.objects.filter(email=request.POST['email'])
-        events = Team.objects.filter(manage=user).order_by('name')[:10]
+        events = Team.objects.filter(members=user).order_by('name')[:10]
         data = serializers.serialize('json', events,use_natural_keys=True)
         return HttpResponse(data, mimetype='application/json')
     else:
@@ -144,5 +144,17 @@ def add_user_team(request):
         data = serializers.serialize('json', team,use_natural_keys=True)
         return HttpResponse(data, mimetype='application/json')
 
+    else:
+        raise Http404
+
+
+#funcion encargada de listar los ultimos 20 eventos propios
+@csrf_exempt
+def get_team(request):
+    if request.method == 'GET':
+        user = User.objects.filter(email='dherrera@ethgf.com')
+        events = Team.objects.filter(members=user).order_by('name')[:10]
+        data = serializers.serialize('json', events,use_natural_keys=True)
+        return HttpResponse(data, mimetype='application/json')
     else:
         raise Http404
