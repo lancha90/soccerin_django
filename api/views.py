@@ -133,3 +133,16 @@ def get_my_team(request):
         return HttpResponse(data, mimetype='application/json')
     else:
         raise Http404
+
+#funcion encargada adicionar un jugador a un equipo
+@csrf_exempt
+def add_user_team(request):
+    if request.method == 'POST':
+        team = Team.objects.filter(name=request.POST['team'])
+        user = User.objects.filter(username=request.POST['user'])
+        team[0].members.add(user[0])
+        data = serializers.serialize('json', team,use_natural_keys=True)
+        return HttpResponse(data, mimetype='application/json')
+
+    else:
+        raise Http404

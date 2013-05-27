@@ -92,6 +92,7 @@ class Team(models.Model):
     image = models.CharField(max_length=250)
     description = models.TextField()
     manage = models.ForeignKey(User)
+    members = models.ManyToManyField(User, related_name='u+')
 
     def __unicode__(self):
         return '%s' % (self.name)
