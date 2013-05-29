@@ -16,8 +16,7 @@ def get_all_user(request):
 @csrf_exempt
 def get_info_user(request):
     if request.method == 'POST':
-    	print request.POST
-        users = User.objects.filter(username=request.POST['username'],password=request.POST['passwd']).values('name','email','position','level','ranking','profile')
+        users = User.objects.filter(username=request.POST['username'],password=request.POST['passwd']).values('name','email','ranking','level','position','profile')
         if users.count() == 1:
             data = json.dumps(list(users))
             return HttpResponse(data, mimetype='application/json')
@@ -27,6 +26,7 @@ def get_info_user(request):
         raise Http404
 
 #funcion encargada de actualizar la informacion de un usuario
+@csrf_exempt
 def update_info_user(request):
     if request.method == 'POST':
         user = User.objects.get(username=request.POST['username'])
