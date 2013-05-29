@@ -26,6 +26,19 @@ def get_info_user(request):
     else:
         raise Http404
 
+#funcion encargada de actualizar la informacion de un usuario
+def update_info_user(request):
+    if request.method == 'POST':
+        user = User.objects.get(username=request.POST['username'])
+        user.name = request.POST['name']
+        user.email = request.POST['email']
+        user.password = request.POST['passwd']
+        user.position = request.POST['position']
+        user.save()
+        return HttpResponse('user', mimetype='application/json')
+    else:
+        raise Http404
+
 #funcion encargada de adicionar un usuario
 @csrf_exempt
 def add_user(request):

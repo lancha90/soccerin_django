@@ -10,6 +10,7 @@ urlpatterns = patterns('',
     
     url(r'^$','api.views.get_all_user', name='user'),
     url(r'^get_info_user$','api.views.get_info_user', name='get_info_user'),
+    url(r'^update_info_user$','api.views.update_info_user', name='update_info_user'),
     url(r'^add_user$','api.views.add_user', name='add_user'),
 
     url(r'^add_event$','api.views.add_event', name='add_event'),
