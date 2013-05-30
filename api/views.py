@@ -16,7 +16,8 @@ def get_all_user(request):
 @csrf_exempt
 def get_info_user(request):
     if request.method == 'POST':
-        users = User.objects.filter(username=request.POST['username'],password=request.POST['passwd']).values('name','email','ranking','level','position','profile')
+        #users = User.objects.filter(username=request.POST['username'],password=request.POST['passwd']).values('name','email','ranking','level','position','profile')
+        users = User.objects.filter(username=request.POST['username'],password=request.POST['passwd']).values('name','email','position','profile')
         if users.count() == 1:
             data = json.dumps(list(users))
             return HttpResponse(data, mimetype='application/json')
