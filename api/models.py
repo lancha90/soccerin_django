@@ -27,28 +27,27 @@ FIELD_CAPACITY = (
 )
 
 class Administrator(models.Model):
-
-    username = models.CharField(max_length=50)
-    password = models.CharField(max_length=128)
-    name = models.CharField(max_length=50)
     email = models.EmailField()
+    name = models.CharField(max_length=50)
+    password = models.CharField(max_length=128)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    username = models.CharField(max_length=50)
 
     def __unicode__(self):
         return unicode(self.name)
 
 # Usuarios registrados en la aplicacion.
 class User(models.Model):
-
-    username = models.CharField(max_length=50)
-    password = models.CharField(max_length=128)
-    name = models.CharField(max_length=50)
     email = models.EmailField()
-    position = models.CharField(max_length=2, choices=POSITION_FOOTBAL)
-    ranking = models.DecimalField(max_digits=2,decimal_places=1)
-    old = models.DateField()
-    profile = models.CharField(max_length=2, choices=PROFILE_LEG)
     level = models.DecimalField(max_digits=2,decimal_places=1)
+    name = models.CharField(max_length=50)
+    old = models.DateField()
+    password = models.CharField(max_length=128)
+    position = models.CharField(max_length=2, choices=POSITION_FOOTBAL)
+    profile = models.CharField(max_length=2, choices=PROFILE_LEG)
+    ranking = models.DecimalField(max_digits=2,decimal_places=1)
     timestamp = models.DateTimeField(auto_now_add=True)
+    username = models.CharField(max_length=50)
 
     def __unicode__(self):
         return '%s  - %s' % (self.name,self.username)
@@ -58,15 +57,15 @@ class User(models.Model):
 
 #Canchas de futbol registradas en la aplicacion
 class Field(models.Model):
-
+    address = models.CharField(max_length=50)
     administrator = models.ForeignKey(Administrator)
-    name = models.CharField(max_length=50)
+    capacity = models.IntegerField(choices=FIELD_CAPACITY)
     cost = models.FloatField()
+    image = models.CharField(max_length=250)
     latitud = models.CharField(max_length=50)
     longitud = models.CharField(max_length=50)
-    address = models.CharField(max_length=50)
-    image = models.CharField(max_length=250)
-    capacity = models.IntegerField(choices=FIELD_CAPACITY)
+    name = models.CharField(max_length=50)
+    timestamp = models.DateTimeField(auto_now_add=True)
 
     def __unicode__(self):
         return unicode(self.name)
@@ -76,25 +75,61 @@ class Field(models.Model):
 
 #Partidos programados por los usuarios en la plataforma
 class Event(models.Model):
-
-    user = models.ForeignKey(User)
-    field = models.ForeignKey(Field)
     date = models.DateTimeField()
     duration = models.DecimalField(max_digits=3,decimal_places=2)
+    field = models.ForeignKey(Field)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User)
 
     def __unicode__(self):
         return 'Usuario: %s  Fecha: %s' % (self.user.username, self.date)
 
 #Equipos registrados en la plataforma
-class Team(models.Model):
-    
-    name = models.CharField(max_length=50)
-    image = models.CharField(max_length=250)
+class Team(models.Model): 
     description = models.TextField()
+    image = models.CharField(max_length=250)
     manage = models.ForeignKey(User)
     members = models.ManyToManyField(User, related_name='u+')
+    name = models.CharField(max_length=50)
+    timestamp = models.DateTimeField(auto_now_add=True)
 
     def __unicode__(self):
         return '%s' % (self.name)
     def natural_key(self):
         return '%s' % (self.name)
+
+#Mensajes
+class Message(models.Model):
+    body = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+    userfrom = models.ForeignKey(User,related_name='receptor')
+    userto = models.ForeignKey(User,related_name='emisor')
+
+    def __unicode__(self):
+        return 'TO: %s FROM: %s' % (self.userto,self.userfrom)
+    def natural_key(self):
+        return 'TO: %s FROM: %s' % (self.userto,self.userfrom)
+
+#Mensajes
+class Friend(models.Model):
+    friends = models.ManyToManyField(User, related_name='userfriends')
+    timestamp = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User,related_name='person')
+
+    def __unicode__(self):
+        return '%s' % (self.user)
+    def natural_key(self):
+        return '%s' % (self.user)
+
+#Clasificados
+class Advertising(models.Model):
+    description = models.TextField()
+    image = models.CharField(max_length=250)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    title = models.CharField(max_length=250)
+    user = models.ForeignKey(User)
+
+    def __unicode__(self):
+        return '%s' % (self.user)
+    def natural_key(self):
+        return '%s' % (self.user)

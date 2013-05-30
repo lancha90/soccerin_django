@@ -161,13 +161,62 @@ def add_user_team(request):
         raise Http404
 
 
-#funcion encargada de listar los ultimos 20 eventos propios
+#funcion encargada de listar los ultimos 20 equipo de un usuario
 @csrf_exempt
 def get_team(request):
     if request.method == 'GET':
+        print request.POST
         user = User.objects.filter(email='dherrera@ethgf.com')
         events = Team.objects.filter(members=user).order_by('name')[:10]
         data = serializers.serialize('json', events,use_natural_keys=True)
         return HttpResponse(data, mimetype='application/json')
+    else:
+        raise Http404
+
+#funcion encargada de listar la totalidad de amigos
+@csrf_exempt
+def get_user_friends(request):
+    if request.method == 'POST':
+        user = User.objects.get(username=request.POST['username'])
+        friend = Friend.objects.filter(user=user).order_by('timestamp')
+        data = serializers.serialize('json', friend,use_natural_keys=True)
+        return HttpResponse(data, mimetype='application/json')
+    else:
+        raise Http404
+
+#funcion encargada de adicionar un usuario a la lista de amigos
+@csrf_exempt
+def add_user_friend(request):
+    if request.method == 'POST':
+        user = Friend.objects.get(user=User.objects.get(username=request.POST['username']))
+        friend = User.objects.get(username=request.POST['friend'])
+        user.friends.add(friend);
+        return HttpResponse('{code:200}', mimetype='application/json')
+    else:
+        raise Http404
+
+#funcion encargada de listar los ultimos 10 mensajes que llegaron
+@csrf_exempt
+def get_user_message(request):
+    if request.method == 'POST':
+        user = User.objects.get(username=request.POST['username'])
+        message = Message.objects.filter(userto=user).order_by('timestamp')[:10]
+        data = serializers.serialize('json', message,use_natural_keys=True)
+        return HttpResponse(data, mimetype='application/json')
+    else:
+        raise Http404
+
+#funcion encargada de listar los ultimos 10 mensajes que llegaron
+@csrf_exempt
+def add_user_message(request):
+    if request.method == 'POST':
+        userto = User.objects.get(username=request.POST['to'])
+        userfrom = User.objects.get(username=request.POST['from'])
+        message = Message()
+        message.userto = userto
+        message.userfrom = userfrom
+        message.body = request.POST['body']
+        message.save()
+        return HttpResponse('{code:200}', mimetype='application/json')
     else:
         raise Http404
