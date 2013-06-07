@@ -44,20 +44,18 @@ def update_info_user(request):
 @csrf_exempt
 def add_user(request):
     if request.method == 'POST':
-        
         user = User()
         user.username = request.POST['username']
         user.password = request.POST['password']
         user.name = request.POST['name']
         user.email = request.POST['email']
         user.position = request.POST['position']
-        user.ranking = request.POST['ranking']
-        user.old = request.POST['old']
-        user.profile = request.POST['profile']
-        user.level = request.POST['level']
+        user.ranking = '5.0'
+        user.old = '1990-05-27'
+        user.profile = 'AD'
+        user.level = request.POST['level']       
         user.save()
-
-        data = json.dumps({'username':user.username,'email':user.email})
+        data = json.dumps([{'code':200}])
         return HttpResponse(data, mimetype='application/json')
     else:
         return Http404
